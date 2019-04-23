@@ -9,8 +9,7 @@
 #
 ###########################################
 param (
-  [string]$password = "",
-  [bool]$nochecks = $false
+  [string]$password = ""
 )
 function installBoxStarter()
 {
@@ -108,54 +107,6 @@ else {
   Start-Sleep -Milliseconds 500
 }
 
-if ($nochecks -eq $false) {
-  
-  # Check to make sure host is supported
-  Write-Host "[+] Checking to make sure Operating System is compatible"
-  if (-Not (((Get-WmiObject -class Win32_OperatingSystem).Version -eq "6.1.7601") -or ([System.Environment]::OSVersion.Version.Major -eq 10))){
-    Write-Host "`t[ERR] $((Get-WmiObject -class Win32_OperatingSystem).Caption) is not supported, please use Windows 7 Service Pack 1 or Windows 10" -ForegroundColor Red
-    exit 
-  }
-  else
-  {
-    Write-Host "`t$((Get-WmiObject -class Win32_OperatingSystem).Caption) supported" -ForegroundColor Green
-  }
-
-  # Check to make sure host has been updated
-  Write-Host "[+] Checking if host has been configured with updates"
-  if (-Not (get-hotfix | where { (Get-Date($_.InstalledOn)) -gt (get-date).adddays(-30) })) {
-    Write-Host "`t[ERR] This machine has not been updated in the last 30 days, please run Windows Updates to continue`n" -ForegroundColor Red
-    Read-Host  "Press any key to continue"
-    exit
-  }
-  else
-  {
-	  Write-Host "`tupdates appear to be in order" -ForegroundColor Green
-  }
-
-  #Check to make sure host has enough disk space
-  Write-Host "[+] Checking if host has enough disk space"
-  $disk = Get-PSDrive C
-  Start-Sleep -Seconds 1
-  if (-Not (($disk.used + $disk.free)/1GB -gt 58.8)){
-    Write-Host "`t[ERR] This install requires a minimum 60 GB hard drive, please increase hard drive space to continue`n" -ForegroundColor Red
-    Read-Host "Press any key to continue"
-    exit
-  }
-  else
-  {
-    Write-Host "`t> 60 GB hard drive. looks good" -ForegroundColor Green
-  }
-
-  # Prompt user to remind them to take a snapshot
-  Write-Host "[-] Do you need to take a snapshot before continuing? Y/N " -ForegroundColor Yellow -NoNewline
-  $response = Read-Host
-  if ($response -ne "N") {
-    Write-Host "[*] Exiting..." -ForegroundColor Red
-    exit
-  }
-  Write-Host "`tContinuing..." -ForegroundColor Green
-}
 
 # Get user credentials for autologin during reboots
 Write-Host "[ * ] Getting user credentials ..."
