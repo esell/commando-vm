@@ -123,7 +123,7 @@ if ([string]::IsNullOrEmpty($password)) {
 # Install Boxstarter
 Write-Host "[ * ] Installing Boxstarter"
 try {
-  iex ((New-Object System.Net.WebClient).DownloadString('https://boxstarter.org/bootstrapper.ps1')); get-boxstarter -Force
+  iex ((New-Object System.Net.WebClient).DownloadString('https://gist.githubusercontent.com/esell/f2eba98641ff3d5114f701992b23764e/raw/67557002a6460059fa0c99a2e8c7188f640813b6/boostrapper.ps1')); get-boxstarter -Force
 } catch {
   $rc = installBoxStarter
   if (-Not $rc) {
